@@ -1,12 +1,17 @@
 public class process {
-    int id, at, bt, priority;
-    int start, completion, wt, tat, rt;
-    boolean finished = false;
 
-    public process(int id, int at, int bt, int priority) {
+    int id;
+    int arrivalTime;
+    int burstTime;
+    int priority;
+
+    int wt;
+    int tat;
+
+    public process(int id, int arrivalTime, int burstTime, int priority) {
         this.id = id;
-        this.at = at;
-        this.bt = bt;
+        this.arrivalTime = arrivalTime;
+        this.burstTime = burstTime;
         this.priority = priority;
     }
 }
