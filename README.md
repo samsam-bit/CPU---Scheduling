@@ -15,10 +15,32 @@
 3. Fill table
 4. Click Run
 
-## Example
-Input:
-P1: AT=0 BT=5
-P2: AT=1 BT=2
+## Example Scenario
 
-Output:
-Execution Order: P1 -> P2
+### Input
+
+| Process | Arrival Time | Burst Time | Priority |
+|--------|--------------|------------|----------|
+| P1     | 0            | 6          | 2        |
+| P2     | 1            | 3          | 1        |
+| P3     | 2            | 8          | 3        |
+| P4     | 3            | 2          | 2        |
+
+### Scheduling Algorithm
+Shortest Job First (SJF - Non Preemptive)
+
+### Execution Order
+P1 → P4 → P2 → P3
+
+### Output
+
+| Process | WT | TAT |
+|--------|----|-----|
+| P1     | 0  | 6   |
+| P4     | 3  | 5   |
+| P2     | 7  | 10  |
+| P3     | 9  | 17  |
+
+### Notes
+- Priority is included but not used in SJF scheduling.
+- The scheduler selects the process with the smallest burst time among arrived processes.
