@@ -21,6 +21,7 @@ public class GUI {
         JButton btn = new JButton("Create");
         btn.setBounds(120, 60, 120, 30);
         frame.add(btn);
+        frame.setVisible(false);
 
         btn.addActionListener(e -> {
 
@@ -46,7 +47,26 @@ public class GUI {
             JButton run = new JButton("Run SJF");
             run.setBounds(180, 200, 120, 30);
             inputFrame.add(run);
+            JButton back = new JButton("Back");
+            back.setBounds(40, 200, 100, 30);
+            inputFrame.add(back);
+            nField.setText("");
 
+            JButton reset = new JButton("Reset");
+            reset.setBounds(320, 200, 100, 30);
+            inputFrame.add(reset);
+            reset.addActionListener(e2 -> {
+
+                model.setRowCount(0); // remove all rows
+
+                for (int i = 0; i < n; i++) {
+                    model.addRow(new Object[]{"P" + (i + 1), "", "", ""});
+                }
+            });
+            back.addActionListener(e2 -> {
+                inputFrame.dispose();
+                frame.setVisible(true);
+            });
 
             run.addActionListener(ev -> {
 
@@ -81,5 +101,9 @@ public class GUI {
         });
 
         frame.setVisible(true);
+
+
     }
+
+
 }
