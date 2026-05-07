@@ -57,7 +57,7 @@ public class GUI {
             inputFrame.add(reset);
             reset.addActionListener(e2 -> {
 
-                model.setRowCount(0); // remove all rows
+                model.setRowCount(0);
 
                 for (int i = 0; i < n; i++) {
                     model.addRow(new Object[]{"P" + (i + 1), "", "", ""});
