@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class GUI {
@@ -21,11 +22,21 @@ public class GUI {
         JButton btn = new JButton("Create");
         btn.setBounds(120, 60, 120, 30);
         frame.add(btn);
-        frame.setVisible(false);
+
 
         btn.addActionListener(e -> {
 
-            int n = Integer.parseInt(nField.getText());
+            int n;
+
+            try {
+                n = Integer.parseInt(nField.getText());
+                if (n <= 0) throw new Exception();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Enter a valid number!");
+                return;
+            }
+
+            frame.setVisible(false);
 
             JFrame inputFrame = new JFrame("Enter Process Data");
             inputFrame.setSize(500, 350);
@@ -47,26 +58,30 @@ public class GUI {
             JButton run = new JButton("Run SJF");
             run.setBounds(180, 200, 120, 30);
             inputFrame.add(run);
+
             JButton back = new JButton("Back");
             back.setBounds(40, 200, 100, 30);
             inputFrame.add(back);
-            nField.setText("");
 
             JButton reset = new JButton("Reset");
             reset.setBounds(320, 200, 100, 30);
             inputFrame.add(reset);
+
+
             reset.addActionListener(e2 -> {
-
                 model.setRowCount(0);
-
                 for (int i = 0; i < n; i++) {
                     model.addRow(new Object[]{"P" + (i + 1), "", "", ""});
                 }
             });
+
+
             back.addActionListener(e2 -> {
                 inputFrame.dispose();
                 frame.setVisible(true);
+                nField.setText("");
             });
+
 
             run.addActionListener(ev -> {
 
@@ -74,16 +89,24 @@ public class GUI {
 
                 for (int i = 0; i < n; i++) {
 
-                    int at = Integer.parseInt(model.getValueAt(i, 1).toString());
-                    int bt = Integer.parseInt(model.getValueAt(i, 2).toString());
-                    int pr = Integer.parseInt(model.getValueAt(i, 3).toString());
+                    try {
+                        int at = Integer.parseInt(model.getValueAt(i, 1).toString());
+                        int bt = Integer.parseInt(model.getValueAt(i, 2).toString());
+                        int pr = Integer.parseInt(model.getValueAt(i, 3).toString());
 
-                    p[i] = new process(i + 1, at, bt, pr);
+                        if (at < 0 || bt <= 0) {
+                            throw new Exception();
+                        }
+
+                        p[i] = new process(i + 1, at, bt, pr);
+
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Invalid input at row " + (i + 1));
+                        return;
+                    }
                 }
 
-
                 String order = scheduler.SJF(p, n);
-
 
                 String output = order + "\n\n=== RESULT ===\n";
 
@@ -93,7 +116,6 @@ public class GUI {
                             " TAT=" + x.tat + "\n";
                 }
 
-
                 JOptionPane.showMessageDialog(null, output);
             });
 
@@ -101,9 +123,5 @@ public class GUI {
         });
 
         frame.setVisible(true);
-
-
     }
-
-
 }
