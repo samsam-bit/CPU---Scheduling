@@ -4,6 +4,7 @@ public class process {
     int arrivalTime;
     int burstTime;
     int priority;
+    int remainingTime;
 
     int wt;
     int tat;
@@ -13,5 +14,6 @@ public class process {
         this.arrivalTime = arrivalTime;
         this.burstTime = burstTime;
         this.priority = priority;
+        this.remainingTime = burstTime;
     }
 }

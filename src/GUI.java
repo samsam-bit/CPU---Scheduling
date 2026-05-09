@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class GUI {
@@ -23,7 +22,6 @@ public class GUI {
         btn.setBounds(120, 60, 120, 30);
         frame.add(btn);
 
-
         btn.addActionListener(e -> {
 
             int n;
@@ -39,7 +37,7 @@ public class GUI {
             frame.setVisible(false);
 
             JFrame inputFrame = new JFrame("Enter Process Data");
-            inputFrame.setSize(500, 350);
+            inputFrame.setSize(500, 400);
             inputFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             inputFrame.setLayout(null);
 
@@ -55,16 +53,24 @@ public class GUI {
                 model.addRow(new Object[]{"P" + (i + 1), "", "", ""});
             }
 
-            JButton run = new JButton("Run SJF");
-            run.setBounds(180, 200, 120, 30);
-            inputFrame.add(run);
+
+            JButton runSJF = new JButton("Run SJF");
+            runSJF.setBounds(170, 190, 120, 30);
+            inputFrame.add(runSJF);
+
+
+            JButton runPR = new JButton("Run Priority");
+            runPR.setBounds(170, 230, 120, 30);
+            inputFrame.add(runPR);
+
 
             JButton back = new JButton("Back");
-            back.setBounds(40, 200, 100, 30);
+            back.setBounds(40, 300, 100, 30);
             inputFrame.add(back);
 
+
             JButton reset = new JButton("Reset");
-            reset.setBounds(320, 200, 100, 30);
+            reset.setBounds(320, 300, 100, 30);
             inputFrame.add(reset);
 
 
@@ -75,7 +81,6 @@ public class GUI {
                 }
             });
 
-
             back.addActionListener(e2 -> {
                 inputFrame.dispose();
                 frame.setVisible(true);
@@ -83,32 +88,56 @@ public class GUI {
             });
 
 
-            run.addActionListener(ev -> {
+            process[] p = new process[n];
 
-                process[] p = new process[n];
-
+            Runnable readInput = () -> {
                 for (int i = 0; i < n; i++) {
-
                     try {
                         int at = Integer.parseInt(model.getValueAt(i, 1).toString());
                         int bt = Integer.parseInt(model.getValueAt(i, 2).toString());
                         int pr = Integer.parseInt(model.getValueAt(i, 3).toString());
 
-                        if (at < 0 || bt <= 0) {
-                            throw new Exception();
-                        }
+                        if (at < 0 || bt <= 0) throw new Exception();
 
                         p[i] = new process(i + 1, at, bt, pr);
 
                     } catch (Exception ex) {
                         JOptionPane.showMessageDialog(null, "Invalid input at row " + (i + 1));
-                        return;
+                        throw new RuntimeException();
                     }
+                }
+            };
+
+            runSJF.addActionListener(ev -> {
+                try {
+                    readInput.run();
+                } catch (Exception ex) {
+                    return;
                 }
 
                 String order = scheduler.SJF(p, n);
 
-                String output = order + "\n\n=== RESULT ===\n";
+                String output = order + "\n\n=== SJF RESULT ===\n";
+
+                for (process x : p) {
+                    output += "P" + x.id +
+                            " WT=" + x.wt +
+                            " TAT=" + x.tat + "\n";
+                }
+
+                JOptionPane.showMessageDialog(null, output);
+            });
+
+            runPR.addActionListener(ev -> {
+                try {
+                    readInput.run();
+                } catch (Exception ex) {
+                    return;
+                }
+
+                String order = scheduler.Priority(p, n);
+
+                String output = order + "\n\n=== PRIORITY RESULT ===\n";
 
                 for (process x : p) {
                     output += "P" + x.id +
