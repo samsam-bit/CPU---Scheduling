@@ -76,7 +76,11 @@ public class scheduler {
         boolean[] done = new boolean[n];
         int time = 0, completed = 0;
 
-        String order = "Execution Order: ";
+        StringBuilder order = new StringBuilder("Execution Order: ");
+        StringBuilder gantt = new StringBuilder();
+
+        int currentProcess = -1;
+        int startTime = 0;
 
         while (completed < n) {
 
@@ -94,11 +98,25 @@ public class scheduler {
                 }
             }
 
+            if (idx != currentProcess) {
+                if (currentProcess != -1) {
+                    gantt.append("| P").append(p[currentProcess].id).append(" (").append(startTime).append("-").append(time).append(") ");
+                }
+
+                if (idx != -1) {
+                    order.append("P").append(p[idx].id).append(" -> ");
+                    if (p[idx].rt == -1) {
+                        p[idx].rt = time - p[idx].arrivalTime;
+                    }
+                }
+
+                currentProcess = idx;
+                startTime = time;
+            }
+
             if (idx == -1) {
                 time++;
             } else {
-
-                order += "P" + p[idx].id + " -> ";
 
                 p[idx].wt = time - p[idx].arrivalTime;
                 time += p[idx].burstTime;
@@ -109,6 +127,70 @@ public class scheduler {
             }
         }
 
-        return order + "END";
+        if (currentProcess != -1) {
+            gantt.append("| P").append(p[currentProcess].id).append(" (").append(startTime).append("-").append(time).append(") ");
+        }
+
+        return "ORDER: " + order.toString() + "END\nGANTT: " + gantt.toString();
+    }
+
+    public static String SJF_NonPreemptive(process[] p, int n) {
+
+        boolean[] done = new boolean[n];
+        int time = 0, completed = 0;
+
+        StringBuilder order = new StringBuilder("Execution Order: ");
+        StringBuilder gantt = new StringBuilder();
+
+        int currentProcess = -1;
+        int startTime = 0;
+
+        while (completed < n) {
+            int idx = -1;
+            int min = Integer.MAX_VALUE;
+
+            for (int i = 0; i < n; i++) {
+                if (!done[i] && p[i].arrivalTime <= time) {
+                    if (p[i].burstTime < min) {
+                        min = p[i].burstTime;
+                        idx = i;
+                    }
+                }
+            }
+
+            if (idx != currentProcess) {
+                if (currentProcess != -1) {
+                    gantt.append("| P").append(p[currentProcess].id).append(" (").append(startTime).append("-").append(time).append(") ");
+                }
+
+                if (idx != -1) {
+                    order.append("P").append(p[idx].id).append(" -> ");
+                    if (p[idx].rt == -1) {
+                        p[idx].rt = time - p[idx].arrivalTime;
+                    }
+                }
+
+                currentProcess = idx;
+                startTime = time;
+            }
+
+            if (idx == -1) {
+                time++;
+            } else {
+
+                p[idx].wt = time - p[idx].arrivalTime;
+                time += p[idx].burstTime;
+                p[idx].tat = p[idx].wt + p[idx].burstTime;
+
+                done[idx] = true;
+                completed++;
+            }
+        }
+
+        if (currentProcess != -1) {
+            gantt.append("| P").append(p[currentProcess].id).append(" (").append(startTime).append("-").append(time).append(") ");
+        }
+
+        return "ORDER: " + order.toString() + "END\nGANTT: " + gantt.toString();
     }
 }
