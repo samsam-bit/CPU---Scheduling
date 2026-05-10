@@ -3,17 +3,18 @@ public class scheduler {
     public static String SJF(process[] p, int n) {
 
         int time = 0, completed = 0;
-        String order = "Execution Order: ";
+        StringBuilder order = new StringBuilder("Execution Order: ");
+        StringBuilder gantt = new StringBuilder();
+
+        int currentProcess = -1;
+        int startTime = 0;
 
         while (completed < n) {
-
             int idx = -1;
             int min = Integer.MAX_VALUE;
 
             for (int i = 0; i < n; i++) {
-
                 if (p[i].arrivalTime <= time && p[i].remainingTime > 0) {
-
                     if (p[i].remainingTime < min) {
                         min = p[i].remainingTime;
                         idx = i;
@@ -21,26 +22,42 @@ public class scheduler {
                 }
             }
 
+            if (idx != currentProcess) {
+                if (currentProcess != -1) {
+                    gantt.append("| P").append(p[currentProcess].id).append(" (").append(startTime).append("-").append(time).append(") ");
+                }
+                
+                if (idx != -1) {
+                    order.append("P").append(p[idx].id).append(" -> ");
+                    // Record first time process gets CPU
+                    if (p[idx].rt == -1) {
+                        p[idx].rt = time - p[idx].arrivalTime;
+                    }
+                }
+                
+                currentProcess = idx;
+                startTime = time;
+            }
+                
             if (idx == -1) {
-                time++;
+                // Idle
             } else {
-
-                order += "P" + p[idx].id + " -> ";
-
                 p[idx].remainingTime--;
-                time++;
-
                 if (p[idx].remainingTime == 0) {
                     completed++;
-
-                    int finish = time;
-                    p[idx].tat = finish - p[idx].arrivalTime;
+                    p[idx].tat = (time + 1) - p[idx].arrivalTime;
                     p[idx].wt = p[idx].tat - p[idx].burstTime;
                 }
             }
+            time++;
+        }
+        
+        // Last process
+        if (currentProcess != -1) {
+            gantt.append("| P").append(p[currentProcess].id).append(" (").append(startTime).append("-").append(time).append(") ");
         }
 
-        return order + "END";
+        return "ORDER: " + order.toString() + "END\nGANTT: " + gantt.toString();
     }
     public static void print(process[] p, int n) {
 

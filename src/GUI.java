@@ -115,14 +115,20 @@ public class GUI {
                     return;
                 }
 
-                String order = scheduler.SJF(p, n);
+                String result = scheduler.SJF(p, n);
+                String[] parts = result.split("\nGANTT: ");
+                String order = parts[0].replace("ORDER: ", "");
+                String gantt = parts.length > 1 ? parts[1] : "No Gantt chart available";
 
-                String output = order + "\n\n=== SJF RESULT ===\n";
+                String output = "Execution Sequence:\n" + order + "\n\n" +
+                                "Gantt Chart:\n" + gantt + "\n\n" +
+                                "=== SJF RESULT ===\n";
 
                 for (process x : p) {
                     output += "P" + x.id +
                             " WT=" + x.wt +
-                            " TAT=" + x.tat + "\n";
+                            " TAT=" + x.tat +
+                            " RT=" + x.rt + "\n";
                 }
 
                 JOptionPane.showMessageDialog(null, output);

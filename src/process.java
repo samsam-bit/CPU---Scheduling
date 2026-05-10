@@ -8,6 +8,7 @@ public class process {
 
     int wt;
     int tat;
+    int rt;
 
     public process(int id, int arrivalTime, int burstTime, int priority) {
         this.id = id;
@@ -15,5 +16,6 @@ public class process {
         this.burstTime = burstTime;
         this.priority = priority;
         this.remainingTime = burstTime;
+        this.rt = -1;
     }
 }
